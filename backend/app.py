@@ -5,6 +5,7 @@ from flask_bcrypt import Bcrypt # <-- 1. IMPORTE O BCRYPT
 from database import db
 import models
 from routes import api # <-- 2. IMPORTE O BLUEPRINT 'api'
+from flask_jwt_extended import JWTManager
 
 # --- INÍCIO DA CONFIGURAÇÃO ---
 DB_USER = 'root'
@@ -21,11 +22,17 @@ def create_app():
     CORS(app)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}'
+
+    jwt = JWTManager(app)
+    
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['JWT_SECRET_KEY'] = 'coxinha123'
+
 
     db.init_app(app)
     Migrate(app, db)
     bcrypt.init_app(app) # <-- 3. INICIALIZE O BCRYPT COM O APP
+
 
     # 4. REGISTRE O BLUEPRINT
     app.register_blueprint(api, url_prefix='/api')
