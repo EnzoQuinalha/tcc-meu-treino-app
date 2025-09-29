@@ -29,7 +29,93 @@ A longo prazo esperamos conseguir lançar o app em todas as lojas de aplicativos
 * **Backend:** [Node.js](https://nodejs.org/), [Python](https://www.python.org/)
 * **Banco de Dados:** [SQLAlchemy](https://www.sqlalchemy.org/), [MySQLWorkbench](https://www.mysql.com/products/workbench/)
 
+Antes de começar, garanta que você tem as seguintes ferramentas instaladas na sua máquina:
+* [Git](https://git-scm.com/downloads)
+* [Node.js e npm](https://nodejs.org/en/) (versão LTS recomendada)
+* [Python](https://www.python.org/downloads/) (versão 3.8 ou superior)
+* [MySQL Server](https://dev.mysql.com/downloads/mysql/) (e opcionalmente o [MySQL Workbench](https://dev.mysql.com/downloads/workbench/))
 
+## ⚙️ Passo a Passo da Instalação
+
+### 1. Clonar o Repositório
+Abra seu terminal e clone o projeto para sua máquina local:
+```bash
+git clone [https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git](https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git)
+cd SEU-REPOSITORIO
+```
+
+### 2. Configurar o Backend (Python)
+```bash
+# Navegue para a pasta do backend
+cd backend
+
+# Crie e ative um ambiente virtual
+python -m venv venv
+# No Windows:
+venv\Scripts\activate
+# No macOS/Linux:
+# source venv/bin/activate
+
+# Instale as dependências do Python
+pip install -r requirements.txt
+```
+
+### 3. Configurar o Banco de Dados e Variáveis de Ambiente
+```bash
+# No MySQL, crie o banco de dados para o projeto
+# Você pode fazer isso pelo MySQL Workbench com o comando:
+# CREATE DATABASE meu_treino_db;
+
+# Na pasta backend/, copie o arquivo de exemplo .env.example
+# No Windows:
+copy .env.example .env
+# No macOS/Linux:
+# cp .env.example .env
+
+# Abra o arquivo .env que acabou de ser criado e preencha com suas credenciais do MySQL
+# Ex: DB_PASS="sua_senha_secreta"
+```
+
+### 4. Aplicar as Migrações do Banco de Dados
+Com o ambiente virtual do backend ainda ativo, execute os seguintes comandos para criar as tabelas do banco de dados:
+```bash
+# No Windows:
+set FLASK_APP=app.py
+# No macOS/Linux:
+# export FLASK_APP=app.py
+
+flask db upgrade
+```
+
+### 5. Configurar o Frontend (React)
+```bash
+# A partir da pasta raiz do projeto, navegue para o frontend
+cd ../frontend
+
+# Instale as dependências do Node.js
+npm install
+```
+
+## Como Rodar a Aplicação
+
+Para rodar o projeto, você precisará de **dois terminais abertos**.
+
+**Terminal 1 - Rodando o Backend:**
+```bash
+cd backend
+venv\Scripts\activate  # Ative o venv se não estiver ativo
+python app.py
+```
+*O servidor Flask estará rodando em `http://127.0.0.1:5000`*
+
+**Terminal 2 - Rodando o Frontend:**
+```bash
+cd frontend
+npm start
+```
+*O servidor de desenvolvimento do React abrirá automaticamente no seu navegador em `http://localhost:3000` (ou uma porta similar).*
+
+**Pronto!** Agora a aplicação está totalmente configurada e rodando na sua máquina.
 
 
 
