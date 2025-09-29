@@ -27,3 +27,14 @@ A longo prazo esperamos conseguir lançar o app em todas as lojas de aplicativos
 * **Frontend:** [React](https://reactjs.org/), [Axios](https://axios-http.com/)
 * **Backend:** [Node.js](https://nodejs.org/), [Python](https://www.python.org/)
 * **Banco de Dados:** [SQLAlchemy](https://www.sqlalchemy.org/), [MySQLWorkbench](https://www.mysql.com/products/workbench/)
+
+
+
+
+
+
+
+
+
+
+//TODO Transcrição para React Native
