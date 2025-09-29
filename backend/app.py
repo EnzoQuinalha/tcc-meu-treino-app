@@ -6,12 +6,15 @@ from database import db
 import models
 from routes import api # <-- 2. IMPORTE O BLUEPRINT 'api'
 from flask_jwt_extended import JWTManager
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # --- INÍCIO DA CONFIGURAÇÃO ---
-DB_USER = 'root'
-DB_PASS = 'admin' # Garanta que a senha está correta
-DB_HOST = 'localhost'
-DB_NAME = 'meu_treino_db'
+DB_USER = os.getenv('DB_USER')
+DB_PASS = os.getenv('DB_PASS')
+DB_HOST = os.getenv('DB_HOST')
+DB_NAME = os.getenv('DB_NAME')
 # --- FIM DA CONFIGURAÇÃO ---
 
 # Inicializa o Bcrypt fora da função para ser importado em routes.py
@@ -26,7 +29,7 @@ def create_app():
     jwt = JWTManager(app)
     
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['JWT_SECRET_KEY'] = 'coxinha123'
+    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 
 
     db.init_app(app)
