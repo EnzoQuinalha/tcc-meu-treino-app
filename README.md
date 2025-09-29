@@ -37,5 +37,5 @@ A longo prazo esperamos conseguir lançar o app em todas as lojas de aplicativos
 
 
 
-> //TODO Transcrição para React Native; /n
+> //TODO Transcrição para React Native; <br>
 > //Criar interface para o App
