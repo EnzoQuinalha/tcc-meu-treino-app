@@ -18,9 +18,10 @@ A longo prazo esperamos conseguir lançar o app em todas as lojas de aplicativos
 * ✅ **Login:** Implementamos a funcionalidade de login, que permite acessar a sua conta de forma segura, por meio de tokens.
 * ✅ **Perfil:** Implementamos a funcionalidade de perfil, uma página que serve para que os usuários vejam seus dados cadastrados
 * ✅ **Visualização das fichas de treino:** Essa funcionalidade garante que os usuários vejam os detalhes de seus treinos
-* ❌ **Montagem das fichas de treino (Em desenvolvimento):** Essa funcionalidade permite que os usuários montem suas fichas de treino a partir dos exercicios fornecidos no banco de dados e personalizem seus atributos.
+* ✅ **Montagem das fichas de treino:** Essa funcionalidade permite que os usuários montem suas fichas de treino a partir dos exercicios fornecidos no banco de dados e personalizem seus atributos.
+* ✅ **Rotas upgrade e remoção fichas de treino:** Essa funcionalidade permite que os usuários atualizem e deletem suas fichas de treino.
 * ❌ **Adicionar exercicios por meio da api (Em desenvolvimento):** Essa funcionalidade é apenas disponivel para administradores, para que sejam adicionados os exercicios ao app.
-* ❌ **Rotas upgrade e remoção fichas de treino (Em desenvolvimento):** Essa funcionalidade permite que os usuários atualizem e deletem suas fichas de treino.
+  
 
 ## 🛠️ Tecnologias Utilizadas
 
