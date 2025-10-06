@@ -40,8 +40,8 @@ Antes de começar, garanta que você tem as seguintes ferramentas instaladas na 
 ### 1. Clonar o Repositório
 Abra seu terminal e clone o projeto para sua máquina local:
 ```bash
-git clone [https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git](https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git)
-cd SEU-REPOSITORIO
+git clone [https://github.com/EnzoQuinalha/tcc-meu-treino-app.git](https://github.com/EnzoQuinalha/tcc-meu-treino-app.git)
+cd tcc-meu-treino-app
 ```
 
 ### 2. Configurar o Backend (Python)
