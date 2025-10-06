@@ -1,8 +1,10 @@
 from flask import Blueprint, request, jsonify
 from database import db
-from models import Usuario, Treino, Exercicio, TreinoExercicio
+from models import Usuario, Treino, Exercicio, TreinoExercicio, RegistroTreino
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from datetime import datetime, timedelta
+
 
 # Inicializamos o bcrypt aqui, mas ele será configurado no app.py
 bcrypt = Bcrypt()
@@ -283,3 +285,42 @@ def atualizar_treino(treino_id):
     db.session.commit()
     
     return jsonify({"mensagem": "Treino atualizado com sucesso!"})
+
+@api.route('/registros', methods=['POST'])
+@jwt_required()
+def registrar_treino():
+    user_id = get_jwt_identity()
+    dados = request.get_json()
+    treino_id = dados.get('treino_id')
+
+    # Usa a data de hoje por padrão
+    data_treino = datetime.utcnow().date()
+
+    if not treino_id:
+        return jsonify({"erro": "ID do treino é obrigatório"}), 400
+
+    novo_registro = RegistroTreino(user_id=user_id, treino_id=treino_id, data=data_treino)
+    db.session.add(novo_registro)
+    db.session.commit()
+
+    return jsonify({"mensagem": "Treino registrado com sucesso!"}), 201
+
+# NOVA ROTA PARA BUSCAR OS REGISTROS DA ÚLTIMA SEMANA
+@api.route('/registros/semana', methods=['GET'])
+@jwt_required()
+def registros_da_semana():
+    user_id = get_jwt_identity()
+    hoje = datetime.utcnow().date()
+    # Pega os últimos 7 dias (hoje - 6 dias)
+    inicio_semana = hoje - timedelta(days=6)
+
+    registros = RegistroTreino.query.filter(
+        RegistroTreino.user_id == user_id,
+        RegistroTreino.data >= inicio_semana,
+        RegistroTreino.data <= hoje
+    ).all()
+
+    # Retorna apenas uma lista de strings com as datas dos treinos
+    datas_treinadas = [reg.data.isoformat() for reg in registros]
+
+    return jsonify(datas_treinadas)

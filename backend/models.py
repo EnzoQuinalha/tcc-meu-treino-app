@@ -61,3 +61,22 @@ class TreinoExercicio(db.Model):
 
     def __repr__(self):
         return f'<Associacao Treino ID:{self.treino_id} Exercicio ID:{self.exercicio_id}>'
+    
+class RegistroTreino(db.Model):
+    __tablename__ = 'registros_treino'
+
+    id = db.Column(db.Integer, primary_key=True)
+    data = db.Column(db.Date, nullable=False) # A data em que o treino foi realizado
+    
+    # Chave estrangeira para saber quem fez o treino
+    user_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    
+    # Chave estrangeira para saber qual ficha de treino foi usada
+    treino_id = db.Column(db.Integer, db.ForeignKey('treinos.id'), nullable=False)
+    
+    # Relações para facilitar a navegação
+    usuario = db.relationship('Usuario')
+    treino = db.relationship('Treino')
+
+    def __repr__(self):
+        return f'<RegistroTreino user:{self.user_id} data:{self.data}>'

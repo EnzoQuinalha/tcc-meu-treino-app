@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import FormularioEdicaoTreino from './FormularioEdicaoTreino'; // <-- NOVO: Importamos o formulário que vamos criar
+import FormularioEdicaoTreino from './FormularioEdicaoTreino';
 
 function ListaTreinos() {
   const [treinos, setTreinos] = useState([]);
   const [mensagem, setMensagem] = useState('Carregando treinos...');
-  const [editandoTreinoId, setEditandoTreinoId] = useState(null); // <-- NOVO: Estado para controlar qual treino está sendo editado
+  const [editandoTreinoId, setEditandoTreinoId] = useState(null);
 
   const buscarTreinos = async () => {
-    // ... (a função buscarTreinos continua igual a antes)
     const token = localStorage.getItem('token');
     if (!token) {
       setMensagem('Faça o login para ver seus treinos.');
       return;
     }
     try {
+      // ATENÇÃO: Verifique se a URL está correta para o seu projeto web
       const response = await axios.get('http://127.0.0.1:5000/api/treinos', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.data.length === 0) {
         setMensagem('Você ainda não criou nenhum treino.');
-        setTreinos([]); // Garante que a lista fique vazia
+        setTreinos([]);
       } else {
         setTreinos(response.data);
       }
@@ -35,7 +35,6 @@ function ListaTreinos() {
   }, []);
 
   const handleApagarTreino = async (treinoId) => {
-    // ... (a função handleApagarTreino continua igual a antes)
     if (!window.confirm('Tem certeza que deseja apagar este treino?')) return;
     const token = localStorage.getItem('token');
     try {
@@ -50,19 +49,34 @@ function ListaTreinos() {
     }
   };
 
-  // <-- NOVO: Função para fechar o formulário de edição e atualizar a lista
+  // --- NOVA FUNÇÃO ADICIONADA AQUI ---
+  const handleMarcarFeito = async (treinoId) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      // ATENÇÃO: Verifique se a URL está correta para o seu projeto web
+      await axios.post('http://127.0.0.1:5000/api/registros', 
+      { treino_id: treinoId }, 
+      {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      alert('Parabéns! Treino de hoje registrado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao registrar treino:', error);
+      alert('Não foi possível registrar o treino.');
+    }
+  };
+  // ------------------------------------
+
   const handleEdicaoConcluida = () => {
-    setEditandoTreinoId(null); // Fecha o formulário
-    buscarTreinos(); // Busca os treinos novamente para mostrar os dados atualizados
+    setEditandoTreinoId(null);
+    buscarTreinos();
   };
 
-  // <-- NOVO: Lógica de renderização condicional
   if (editandoTreinoId) {
-    // Se um treino está sendo editado, mostra o formulário de edição
     return <FormularioEdicaoTreino treinoId={editandoTreinoId} onEdicaoConcluida={handleEdicaoConcluida} />;
   }
 
-  // Se não, mostra a lista de treinos (código que já tínhamos)
   return (
     <div>
       <h2>Minhas Fichas de Treino</h2>
@@ -70,17 +84,21 @@ function ListaTreinos() {
         <div key={treino.id} style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
           <h3>{treino.nome} - ({treino.dia})</h3>
           
-          {/* --- BOTÃO NOVO DE EDITAR --- */}
           <button onClick={() => setEditandoTreinoId(treino.id)} style={{marginRight: '10px'}}>
             Editar
           </button>
           
-          <button onClick={() => handleApagarTreino(treino.id)} style={{backgroundColor: 'red', color: 'white', border: 'none', cursor: 'pointer'}}>
+          <button onClick={() => handleApagarTreino(treino.id)} style={{backgroundColor: 'red', color: 'white', border: 'none', cursor: 'pointer', marginRight: '10px'}}>
             Apagar Treino
           </button>
           
+          {/* --- NOVO BOTÃO ADICIONADO AQUI --- */}
+          <button onClick={() => handleMarcarFeito(treino.id)} style={{backgroundColor: 'green', color: 'white', border: 'none', cursor: 'pointer'}}>
+            Marcar como Feito Hoje
+          </button>
+          {/* ------------------------------------ */}
+          
           <ul>
-            {/* ... (o map dos exercícios continua igual) ... */}
             {treino.exercicios.map(exercicio => (
               <li key={exercicio.id_exercicio}>
                 <strong>{exercicio.nome_exercicio}</strong>: {exercicio.series} séries de {exercicio.repeticoes} reps.

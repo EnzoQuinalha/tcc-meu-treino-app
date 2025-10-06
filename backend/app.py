@@ -34,7 +34,7 @@ def create_app():
 
     db.init_app(app)
     Migrate(app, db)
-    bcrypt.init_app(app) # <-- 3. INICIALIZE O BCRYPT COM O APP
+    bcrypt.init_app(app)
 
 
     # 4. REGISTRE O BLUEPRINT
