@@ -12,7 +12,7 @@ export default function LoginPage() {
     setError(null);
     try {
       // Lembre-se de usar o IP do seu computador aqui, não 10.0.2.2 se for testar na web ou celular físico
-      const res = await fetch('http://localhost:8081/api/login', { // <-- TROQUE PELO SEU IP
+      const res = await fetch('http://localhost:5000/api/login', { // <-- TROQUE PELO SEU IP
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, senha }),

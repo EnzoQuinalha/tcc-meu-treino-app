@@ -1,35 +1,33 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import { FontAwesome } from '@expo/vector-icons';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function TabsLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+    <Tabs screenOptions={{ tabBarActiveTintColor: 'blue', headerShown: false }}>
       <Tabs.Screen
-        name="index"
+        name="index" // Tela de Início (Resumo da Semana)
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Início',
+          tabBarIcon: ({ color }) => <FontAwesome name="home" size={28} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="treinos" // Tela de "Meus Treinos"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Treinos',
+          tabBarIcon: ({ color }) => <FontAwesome name="list-alt" size={28} color={color} />,
         }}
       />
+      
+      {/* --- NOVA ABA ADICIONADA AQUI --- */}
+      <Tabs.Screen
+        name="perfil" // Corresponde ao arquivo perfil.tsx
+        options={{
+          title: 'Perfil',
+          tabBarIcon: ({ color }) => <FontAwesome name="user" size={28} color={color} />,
+        }}
+      />
+
     </Tabs>
   );
 }

@@ -14,7 +14,7 @@ export default function MainPage() {
     const fetchResumoSemana = async () => {
       try {
         // Lembre-se de usar o IP do seu computador aqui!
-        const response = await axios.get('http://192.168.0.15:5000/api/registros/semana', { 
+        const response = await axios.get('http://localhost:5000/api/registros/semana', { 
           headers: { 'Authorization': `Bearer ${token}` }
         });
         setDatasTreinadas(response.data);
