@@ -42,9 +42,9 @@ function MainLayout() {
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
+      {/* <header className="App-header">
         <h1>Meu Treino App</h1>
-      </header>
+      </header> */}
       <main>
         <Routes>
           {/* Rotas Públicas */}

@@ -81,14 +81,7 @@ function ListaTreinos() {
   return (
     <div>
       <h2>Minhas Fichas de Treino</h2>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2>Minhas Fichas de Treino</h2>
-        {/* --- 2. BOTÃO/LINK ADICIONADO AQUI --- */}
-        <Link to="/criar-treino">
-          <button>+ Novo Treino</button>
-        </Link>
-        {/* ------------------------------------ */}
-      </div>
+      
       {treinos.length === 0 ? <p>{mensagem}</p> : treinos.map(treino => (
         <div key={treino.id} style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
           <h3>{treino.nome} - ({treino.dia})</h3>
@@ -118,6 +111,13 @@ function ListaTreinos() {
           </ul>
         </div>
       ))}
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
+        {/* --- 2. BOTÃO/LINK ADICIONADO AQUI --- */}
+        <Link to="/criar-treino">
+          <button>+ Novo Treino</button>
+        </Link>
+        {/* ------------------------------------ */}
+      </div>
     </div>
   );
 }
