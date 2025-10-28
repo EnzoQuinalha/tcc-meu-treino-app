@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Perfil() {
   // Estado para guardar os dados do usuário
   const [usuario, setUsuario] = useState(null);
   // Estado para mensagens de erro ou carregamento
   const [mensagem, setMensagem] = useState('Carregando perfil...');
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // Remove o token
+    navigate('/login'); // Redireciona para o login
+  };
 
   // O useEffect é executado uma vez, quando o componente é montado na tela
   useEffect(() => {
@@ -50,9 +57,11 @@ function Perfil() {
   return (
     <div>
       <h2>Perfil do Usuário</h2>
-      <p><strong>ID:</strong> {usuario.id}</p>
       <p><strong>Nome:</strong> {usuario.nome}</p>
       <p><strong>Email:</strong> {usuario.email}</p>
+      <button onClick={handleLogout} style={{backgroundColor: 'red', color: 'white'}}>
+        Sair (Logout)
+      </button>
     </div>
   );
 }

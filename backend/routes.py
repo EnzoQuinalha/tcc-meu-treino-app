@@ -324,3 +324,4 @@ def registros_da_semana():
     datas_treinadas = [reg.data.isoformat() for reg in registros]
 
     return jsonify(datas_treinadas)
+

@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // <-- 1. IMPORTE O useNavigate
 
 function FormularioLogin() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [error, setError] = useState(null); // Estado para erros, se precisar
+  
+  const navigate = useNavigate(); // <-- 2. INICIALIZE O HOOK
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setError(null); // Limpa erros anteriores
 
     const dadosLogin = {
       email: email,
@@ -14,25 +19,26 @@ function FormularioLogin() {
     };
 
     try {
-      // Faz a requisição POST para o endpoint de login
-      const response = await axios.post('http://127.0.0.1:5000/api/login', dadosLogin);
-
-      // Pega o token da resposta
+      // Use a URL correta do seu backend Flask (porta 5000)
+      const response = await axios.post('http://127.0.0.1:5000/api/login', dadosLogin); 
+      
       const token = response.data.access_token;
+      localStorage.setItem('token', token); // Salva o token no navegador
 
-      // **IMPORTANTE: Salva o token no navegador**
-      // O localStorage é um "cofre" no navegador para guardar informações.
-      localStorage.setItem('token', token);
+      // <-- 3. AÇÃO DE REDIRECIONAMENTO -->
+      // Após salvar o token, navega para a página principal (rota "/")
+      navigate('/'); 
+      // ----------------------------------
 
-      alert('Login realizado com sucesso!');
-
-      // Limpa os campos
-      setEmail('');
-      setSenha('');
+      // Limpa os campos após o sucesso (opcional, pode ser feito pela navegação)
+      // setEmail('');
+      // setSenha('');
 
     } catch (error) {
       console.error('Erro no login:', error);
-      alert('Erro no login. Verifique suas credenciais.');
+      // Pega a mensagem de erro da resposta da API, se existir
+      const errorMessage = error.response?.data?.erro || 'Erro no login. Verifique suas credenciais.';
+      setError(errorMessage); // Mostra o erro para o usuário
     }
   };
 
@@ -57,7 +63,11 @@ function FormularioLogin() {
           required
         />
       </div>
+      {/* Mostra a mensagem de erro, se houver */}
+      {error && <p style={{ color: 'red' }}>{error}</p>} 
       <button type="submit">Entrar</button>
+      {/* Você pode adicionar um Link aqui para a página de cadastro */}
+      {/* Ex: <Link to="/cadastro">Não tem conta? Cadastre-se</Link> */}
     </form>
   );
 }
