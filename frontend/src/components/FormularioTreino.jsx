@@ -18,10 +18,11 @@ function FormularioTreino() {
       const token = localStorage.getItem('token');
       if (!token) return;
       try {
-        const response = await axios.get('http://127.0.0.1:5000/api/exercicios', {
+        // Graças ao Passo 1, a API agora envia o gif_url
+        const response = await axios.get('http://127.0.0.1:5000/api/exercicios', { 
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        setCatalogoExercicios(response.data); // Agora 'response.data' tem o gif_url
+        setCatalogoExercicios(response.data); 
       } catch (error) { console.error("Erro ao buscar catálogo", error); }
     };
     buscarCatalogo();
@@ -60,8 +61,7 @@ function FormularioTreino() {
     }
   };
 
-  // --- NOVO ESTILO INLINE PARA O GIF ---
-  // (Pode mover para o .css se preferir)
+  // --- ★★★ 1. ADICIONE O ESTILO INLINE PARA O GIF ★★★ ---
   const gifStyle = {
     width: '150px',
     height: '150px',
@@ -70,20 +70,20 @@ function FormularioTreino() {
     margin: '15px auto 5px auto', // Centraliza e dá espaçamento
     backgroundColor: '#f0f0f0' // Fundo cinza claro enquanto carrega
   };
-  // ------------------------------------
+  // ----------------------------------------------------
 
   return (
     <>
-      <header className="page-header" style={{ borderRadius: '0.75rem 0.75rem 0 0' }}>
+      <header className="page-header" style={{borderRadius: '0.75rem 0.75rem 0 0'}}>
         <Link to="/treinos" className="back-button">
-          {/* ... (código do SVG de voltar) ... */}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
         </Link>
         <h1>Criar Novo Treino</h1>
       </header>
 
       <form id="criar-treino-form" className="form-container" onSubmit={handleSubmit}>
         
-        <section className="form-section" style={{ borderRadius: "0 0 0.75rem 0.75rem"}}>
+        <section className="form-section" style={{borderRadius: '0 0 0.75rem 0.75rem'}}>
           <label htmlFor="treino-nome" className="form-label">Nome do Treino</label>
           <input 
             type="text" 
@@ -110,10 +110,9 @@ function FormularioTreino() {
         <div id="exercicio-lista">
           
           {exercicios.map((ex, index) => {
-            // --- ★★★ LÓGICA DO GIF ADICIONADA AQUI ★★★ ---
-            // Procura no catálogo o exercício que corresponde ao ID selecionado
-            const exercicioSelecionado = catalogoExercicios.find(catEx => catEx.id === ex.exercicio_id);
-            // ---------------------------------------------
+          //eslint-disable-next-line
+            const exercicioSelecionado = catalogoExercicios.find(catEx => catEx.id == ex.exercicio_id); //NÃO TROCAR == PARA === ACABA COM O GIF
+            // ----------------------------------------------------
             
             return (
               <div className="exercicio-card" key={index}>
@@ -134,7 +133,7 @@ function FormularioTreino() {
                   </select>
                 </div>
 
-                {/* --- ★★★ EXIBIÇÃO DO GIF ADICIONADA AQUI ★★★ --- */}
+                {/* --- ★★★ 3. ADICIONE A EXIBIÇÃO DO GIF ★★★ --- */}
                 {exercicioSelecionado && exercicioSelecionado.gif_url && (
                   <img 
                     src={exercicioSelecionado.gif_url} 

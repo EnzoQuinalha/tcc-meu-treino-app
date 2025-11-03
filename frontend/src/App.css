@@ -47,13 +47,14 @@
 .app-layout {
   display: flex;
   flex-direction: row; /* Padrão é linha (lado a lado) */
-  min-height: 100vh;
+  min-height: 90vh;
 }
 
 .main-content-wrapper {
   flex-grow: 1; /* Faz o conteúdo principal ocupar todo o espaço restante */
   padding: 1.5rem; /* Adiciona um respiro para o conteúdo */
   overflow-y: auto; /* Permite rolar o conteúdo se for maior que a tela */
+  height: 90vh;
 }
 
 .sidebar-nav {

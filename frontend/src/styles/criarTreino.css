@@ -84,7 +84,8 @@
     font-weight: 600; /* semibold */
     padding: 0.25rem; /* Pequeno padding para facilitar o clique */
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: 0.5rem;
+    
 
 }
 .btn-remover:hover {
