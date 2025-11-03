@@ -1,7 +1,14 @@
 .App {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
+.App-main {
+  flex-grow: 1;
+  display: flex;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -34,5 +41,43 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+.app-layout {
+  display: flex;
+  flex-direction: row; /* Padrão é linha (lado a lado) */
+  min-height: 100vh;
+}
+
+.main-content-wrapper {
+  flex-grow: 1; /* Faz o conteúdo principal ocupar todo o espaço restante */
+  padding: 1.5rem; /* Adiciona um respiro para o conteúdo */
+  overflow-y: auto; /* Permite rolar o conteúdo se for maior que a tela */
+}
+
+.sidebar-nav {
+  display: none;
+}
+
+/* Esconde a Barra Inferior em telas de desktop */
+.bottom-nav {
+  display: flex; /* Garante que ela apareça por padrão (mobile) */
+}
+@media (min-width: 768px) { /* O 'breakpoint' do seu base.css */
+  
+  .app-layout {
+    /* Remove o padding-bottom, já que a barra inferior some */
+    padding-bottom: 0; 
+  }
+
+  .sidebar-nav {
+    display: flex; /* Mostra a sidebar */
+    flex-shrink: 0; /* Impede que a sidebar encolha */
+    width: 250px; /* Largura da sidebar (ajuste do seu base.css) */
+  }
+
+  .bottom-nav {
+    display: none; /* Esconde a barra inferior */
   }
 }

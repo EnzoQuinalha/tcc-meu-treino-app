@@ -1,40 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import FormularioEdicaoTreino from './FormularioEdicaoTreino';
 import { Link } from 'react-router-dom';
+import FormularioEdicaoTreino from './FormularioEdicaoTreino';
+
+// Importa os estilos da página
+import '../styles/meus-treinos.css'; 
+import '../styles/header.css'; 
+import '../styles/base.css'; 
 
 function ListaTreinos() {
-  const [treinos, setTreinos] = useState([]);
-  const [mensagem, setMensagem] = useState('Carregando treinos...');
+  const [treinos, setTreinos] = useState([]);//eslint-disable-next-line
+  const [mensagem, setMensagem] = useState('Carregando treinos...'); 
   const [editandoTreinoId, setEditandoTreinoId] = useState(null);
-
-  const buscarTreinos = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setMensagem('Faça o login para ver seus treinos.');
-      return;
-    }
-    try {
-      // ATENÇÃO: Verifique se a URL está correta para o seu projeto web
-      const response = await axios.get('http://127.0.0.1:5000/api/treinos', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (response.data.length === 0) {
-        setMensagem('Você ainda não criou nenhum treino.');
-        setTreinos([]);
-      } else {
-        setTreinos(response.data);
-      }
-    } catch (error) {
-      console.error('Erro ao buscar treinos:', error);
-      setMensagem('Não foi possível carregar os treinos.');
-    }
-  };
+  
+  const [openTreinoId, setOpenTreinoId] = useState(null);
+  // ---------------------------------------------
 
   useEffect(() => {
-    buscarTreinos();
-  }, []);
+    const buscarTreinos = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      try {
+        const response = await axios.get('http://127.0.0.1:5000/api/treinos', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.data.length === 0) {
+          setMensagem('Você ainda não criou nenhum treino.');
+        }
+        setTreinos(response.data);
+      } catch (error) { 
+        console.error("Erro ao buscar treinos", error); 
+        setMensagem('Não foi possível carregar seus treinos.');
+      }
+    };
+    if (!editandoTreinoId) {
+      buscarTreinos();
+    }
+  }, [editandoTreinoId]); 
 
+  // --- ★★★ NOVA FUNÇÃO ADICIONADA AQUI ★★★ ---
+  // Função para abrir ou fechar a lista de exercícios de um card
+  const handleToggleExercicios = (treinoId) => {
+    if (openTreinoId === treinoId) {
+      // Se o card clicado já está aberto, fecha ele
+      setOpenTreinoId(null);
+    } else {
+      // Se o card clicado está fechado, abre ele (e fecha qualquer outro)
+      setOpenTreinoId(treinoId);
+    }
+  };
+  // ---------------------------------------------
+
+  // ... (As funções handleApagarTreino, handleMarcarFeito, handleEdicaoConcluida continuam as mesmas) ...
   const handleApagarTreino = async (treinoId) => {
     if (!window.confirm('Tem certeza que deseja apagar este treino?')) return;
     const token = localStorage.getItem('token');
@@ -42,83 +59,124 @@ function ListaTreinos() {
       await axios.delete(`http://127.0.0.1:5000/api/treinos/${treinoId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      setTreinos(treinos.filter(treino => treino.id !== treinoId));
       alert('Treino apagado com sucesso!');
+      setTreinos(treinos.filter(treino => treino.id !== treinoId));
     } catch (error) {
       console.error('Erro ao apagar treino:', error);
       alert('Não foi possível apagar o treino.');
     }
   };
 
-  // --- NOVA FUNÇÃO ADICIONADA AQUI ---
   const handleMarcarFeito = async (treinoId) => {
     const token = localStorage.getItem('token');
     if (!token) return;
     try {
-      // ATENÇÃO: Verifique se a URL está correta para o seu projeto web
       await axios.post('http://127.0.0.1:5000/api/registros', 
       { treino_id: treinoId }, 
-      {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      { headers: { 'Authorization': `Bearer ${token}` } });
       alert('Parabéns! Treino de hoje registrado com sucesso!');
     } catch (error) {
       console.error('Erro ao registrar treino:', error);
       alert('Não foi possível registrar o treino.');
     }
   };
-  // ------------------------------------
+  
+  const handleEdicaoConcluida = () => { setEditandoTreinoId(null); };
 
-  const handleEdicaoConcluida = () => {
-    setEditandoTreinoId(null);
-    buscarTreinos();
-  };
-
+  
   if (editandoTreinoId) {
     return <FormularioEdicaoTreino treinoId={editandoTreinoId} onEdicaoConcluida={handleEdicaoConcluida} />;
   }
 
   return (
-    <div>
-      <h2>Minhas Fichas de Treino</h2>
-      
-      {treinos.length === 0 ? <p>{mensagem}</p> : treinos.map(treino => (
-        <div key={treino.id} style={{ border: '1px solid #ccc', margin: '10px', padding: '10px' }}>
-          <h3>{treino.nome} - ({treino.dia})</h3>
-          
-          <button onClick={() => setEditandoTreinoId(treino.id)} style={{marginRight: '10px'}}>
-            Editar
-          </button>
-          
-          <button onClick={() => handleApagarTreino(treino.id)} style={{backgroundColor: 'red', color: 'white', border: 'none', cursor: 'pointer', marginRight: '10px'}}>
-            Apagar Treino
-          </button>
-          
-          {/* --- NOVO BOTÃO ADICIONADO AQUI --- */}
-          <button onClick={() => handleMarcarFeito(treino.id)} style={{backgroundColor: 'green', color: 'white', border: 'none', cursor: 'pointer'}}>
-            Marcar como Feito Hoje
-          </button>
-          {/* ------------------------------------ */}
-          
-          <ul>
-            {treino.exercicios.map(exercicio => (
-              <li key={exercicio.id_exercicio}>
-                <strong>{exercicio.nome_exercicio}</strong>: {exercicio.series} séries de {exercicio.repeticoes} reps.
-                (Descanso: {exercicio.descanso_seg}s)
-                {exercicio.peso && <span> | Peso: {exercicio.peso}</span>}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
-        {/* --- 2. BOTÃO/LINK ADICIONADO AQUI --- */}
-        <Link to="/criar-treino">
-          <button>+ Novo Treino</button>
+    <>
+      <header className="page-header">
+        <h1>Meus Treinos</h1>
+        <Link to="/criar-treino" className="btn btn-primary">
+          + Criar Treino
         </Link>
-        {/* ------------------------------------ */}
-      </div>
-    </div>
+      </header>
+  
+      <main className="main-content">
+        <section id="meus-treinos" className="meus-treinos-section">
+
+          {treinos.length === 0 ? (
+            <div className="empty-state">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18c-2.305 0-4.408.867-6 2.292m0-14.25v14.25" />
+              </svg>
+              <h3>Nenhum treino encontrado</h3>
+              <p>Comece criando seu primeiro plano de treino para vê-lo aqui.</p>
+              <Link to="/criar-treino" className="btn btn-primary empty-state-btn">
+                Criar meu primeiro treino
+              </Link>
+            </div>
+          ) : (
+            treinos.map(treino => (
+              <div className="treino-card" key={treino.id}>
+                
+                {/* --- ★★★ MUDANÇA AQUI ★★★ --- */}
+                {/* Adicionamos o onClick no cabeçalho para abrir/fechar */}
+                <div 
+                  className="treino-card-header" 
+                  onClick={() => handleToggleExercicios(treino.id)}
+                >
+                  <h3>{treino.nome}</h3>
+                  <span>{treino.dia}</span>
+                  {/* Podemos adicionar um ícone de seta aqui no futuro */}
+                </div>
+                {/* ------------------------------- */}
+                
+                {/* --- ★★★ MUDANÇA AQUI ★★★ --- */}
+                {/* A lista de exercícios agora só é renderizada SE o openTreinoId for igual ao treino.id */}
+                {openTreinoId === treino.id && (
+                  <div className="treino-card-body">
+                    <ul className="exercicio-lista-detalhes">
+                      {treino.exercicios.map(ex => (
+                        <li key={ex.id_exercicio}>
+                          <div className="exercicio-detalhe">
+                            <span className="exercicio-nome">{ex.nome_exercicio}</span>
+                            <span className="exercicio-specs">
+                              {ex.series}x{ex.repeticoes} | Desc: {ex.descanso_seg}s | Peso: {ex.peso || 'N/A'}
+                            </span>
+                          </div>
+                          {ex.gif_url && (
+                             <img src={ex.gif_url} alt={ex.nome_exercicio} className="exercicio-gif-thumb" />
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {/* --- FIM DAS MUDANÇAS --- */}
+
+                <div className="treino-card-footer">
+                  <button 
+                    onClick={() => handleMarcarFeito(treino.id)}
+                    className="btn-card btn-card-primary"
+                  >
+                    Marcar Feito
+                  </button>
+                  <button 
+                    onClick={() => setEditandoTreinoId(treino.id)}
+                    className="btn-card btn-card-secondary"
+                  >
+                    Editar
+                  </button>
+                  <button 
+                    onClick={() => handleApagarTreino(treino.id)}
+                    className="btn-card btn-card-danger"
+                  >
+                    Apagar
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+
+        </section>
+      </main>
+    </>
   );
 }
 

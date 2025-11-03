@@ -1,0 +1,118 @@
+/* 1. Importa os estilos base do fluxo de login (fundo gradiente, botões, header) */
+@import url('login.css');
+
+
+/* --- ★★★ AJUSTE DE LARGURA DA PÁGINA DE CADASTRO ★★★ --- */
+.login-container {
+    /* Aumenta a largura máxima do container nesta página
+       de 384px (padrão do login.css) para 420px (um pouco mais largo) */
+    max-width: 420px;
+}
+
+/* No desktop, o layout do app (sidebar, etc.) não se aplica,
+   então apenas mantemos o container de login centralizado e um pouco maior */
+@media (min-width: 768px) {
+    .login-container {
+        max-width: 450px;
+    }
+}
+/* --- Fim do Ajuste de Largura --- */
+
+
+/* --- Estilos da Página de Cadastro --- */
+
+/* Garante que o conteúdo role no desktop (se necessário) */
+@media (min-width: 768px) {
+    .content-wrapper {
+        flex-grow: 1;
+        height: 100%;
+        overflow-y: auto; /* Permite rolagem do formulário */
+    }
+}
+
+/* Subtítulo da página de cadastro */
+.page-subtitle-cadastro {
+    color: #FED7AA; /* Laranja claro */
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+
+
+/* --- Estilos do Formulário (Copiados de criarTreino.css) --- */
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; 
+}
+
+/* Caixa branca para cada seção */
+.form-section {
+    background-color: #FFFFFF;
+    padding: 1.25rem; 
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; 
+}
+
+/* Labels (Email, Senha, etc) */
+.form-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151; /* Cor escura, pois está no card branco */
+}
+
+/* Inputs (Caixas de texto) */
+.form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #D1D5DB; /* Borda cinza */
+    border-radius: 0.5rem; 
+    background-color: #F9FAFB; /* Fundo cinza claro */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    color: #1F2937; /* Texto escuro */
+}
+.form-input:focus {
+    outline: none;
+    border-color: #F97316; /* Laranja no foco */
+    box-shadow: 0 0 0 2px #FFEDD5; /* Sombra laranja clara */
+}
+
+/* Input de Data (para remover cor padrão) */
+input[type="date"] {
+    color: #374151;
+}
+
+/* Wrapper para o ícone de senha */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Faz o input de senha ter espaço para o ícone */
+.password-wrapper .form-input {
+    padding-right: 3rem; /* 48px */
+}
+
+.password-icon {
+    position: absolute;
+    right: 1rem; /* 16px */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.25rem; /* 20px */
+    height: 1.25rem; /* 20px */
+    color: #9CA3AF; /* gray-400 */
+    cursor: pointer;
+}
+
+/* Botão de Cadastro/Próximo */
+.btn-primary {
+    margin-top: 1rem; /* Espaço acima do botão principal */
+    /* O estilo .btn e .btn-primary já vem do login.css */
+}
+

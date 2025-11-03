@@ -37,6 +37,7 @@ class Treino(db.Model):
     
     # Relação com a tabela de associação
     exercicios_associados = db.relationship('TreinoExercicio', backref='treino', lazy=True, cascade="all, delete-orphan")
+    registros = db.relationship('RegistroTreino', backref='treino', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'<Treino {self.nome}>'
@@ -66,17 +67,10 @@ class RegistroTreino(db.Model):
     __tablename__ = 'registros_treino'
 
     id = db.Column(db.Integer, primary_key=True)
-    data = db.Column(db.Date, nullable=False) # A data em que o treino foi realizado
-    
-    # Chave estrangeira para saber quem fez o treino
+    data = db.Column(db.Date, nullable=False) 
     user_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
-    
-    # Chave estrangeira para saber qual ficha de treino foi usada
     treino_id = db.Column(db.Integer, db.ForeignKey('treinos.id'), nullable=False)
     
-    # Relações para facilitar a navegação
     usuario = db.relationship('Usuario')
-    treino = db.relationship('Treino')
-
     def __repr__(self):
         return f'<RegistroTreino user:{self.user_id} data:{self.data}>'

@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import '../styles/criarTreino.css'; // O CSS que você já importou
 
 function FormularioTreino() {
   const navigate = useNavigate();
   const [nomeTreino, setNomeTreino] = useState('');
   const [diaTreino, setDiaTreino] = useState('');
   const [exercicios, setExercicios] = useState([{ exercicio_id: '', series: '', repeticoes: '', descanso_seg: '', peso: '' }]);
-  const [catalogoExercicios, setCatalogoExercicios] = useState([]); // Agora esperamos {id, nome, gif_url}
+  
+  // Agora esperamos que o catálogo contenha o gif_url
+  const [catalogoExercicios, setCatalogoExercicios] = useState([]); 
 
+  // --- LÓGICA (Tudo isso continua igual) ---
   useEffect(() => {
     const buscarCatalogo = async () => {
       const token = localStorage.getItem('token');
       if (!token) return;
       try {
-        const response = await axios.get('http://127.0.0.1:5000/api/exercicios', { // Garanta que esta rota retorna gif_url
+        const response = await axios.get('http://127.0.0.1:5000/api/exercicios', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        setCatalogoExercicios(response.data);
+        setCatalogoExercicios(response.data); // Agora 'response.data' tem o gif_url
       } catch (error) { console.error("Erro ao buscar catálogo", error); }
     };
     buscarCatalogo();
@@ -44,7 +48,6 @@ function FormularioTreino() {
     event.preventDefault();
     const token = localStorage.getItem('token');
     const novoTreino = { nome: nomeTreino, dia: diaTreino, exercicios };
-
     try {
       await axios.post('http://127.0.0.1:5000/api/treinos', novoTreino, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -57,61 +60,138 @@ function FormularioTreino() {
     }
   };
 
-  // --- Estilos CSS Inline para o GIF (pode mover para um arquivo .css se preferir) ---
+  // --- NOVO ESTILO INLINE PARA O GIF ---
+  // (Pode mover para o .css se preferir)
   const gifStyle = {
     width: '150px',
     height: '150px',
     borderRadius: '8px',
-    display: 'block', // Para centralizar com margin: auto
-    margin: '10px auto', // Centraliza horizontalmente
-    backgroundColor: '#e0e0e0' // Fundo enquanto carrega
+    display: 'block',
+    margin: '15px auto 5px auto', // Centraliza e dá espaçamento
+    backgroundColor: '#f0f0f0' // Fundo cinza claro enquanto carrega
   };
-  // ---------------------------------------------------------------------------------
+  // ------------------------------------
 
   return (
-    <form onSubmit={handleSubmit} style={{ border: '1px solid green', padding: '15px', margin: '10px' }}>
-      <h2>Criar Nova Ficha de Treino</h2>
-      <input type="text" placeholder="Nome do Treino" value={nomeTreino} onChange={(e) => setNomeTreino(e.target.value)} required />
-      <input type="text" placeholder="Dia/Grupo" value={diaTreino} onChange={(e) => setDiaTreino(e.target.value)} />
-      
-      <h3>Exercícios</h3>
-      {exercicios.map((ex, index) => {
-        // --- LÓGICA PARA ENCONTRAR O GIF ---
-        // Procura no catálogo o exercício que corresponde ao ID selecionado
-        const exercicioSelecionado = catalogoExercicios.find(catEx => catEx.id === ex.exercicio_id);
-        // ------------------------------------
+    <>
+      <header className="page-header" style={{ borderRadius: '0.75rem 0.75rem 0 0' }}>
+        <Link to="/treinos" className="back-button">
+          {/* ... (código do SVG de voltar) ... */}
+        </Link>
+        <h1>Criar Novo Treino</h1>
+      </header>
+
+      <form id="criar-treino-form" className="form-container" onSubmit={handleSubmit}>
         
-        return (
-          <div key={index} style={{marginBottom: '10px', padding: '10px', border: '1px solid #eee', borderRadius: '5px'}}>
-            <select name="exercicio_id" value={ex.exercicio_id} onChange={(e) => handleExercicioChange(index, e)} required>
-              <option value="">Selecione...</option>
-              {catalogoExercicios.map(catEx => (
-                <option key={catEx.id} value={catEx.id}>{catEx.nome}</option>
-              ))}
-            </select>
+        <section className="form-section" style={{ borderRadius: "0 0 0.75rem 0.75rem"}}>
+          <label htmlFor="treino-nome" className="form-label">Nome do Treino</label>
+          <input 
+            type="text" 
+            id="treino-nome" 
+            className="form-input" 
+            placeholder="Ex: Treino A - Foco em Peito"
+            value={nomeTreino}
+            onChange={(e) => setNomeTreino(e.target.value)}
+            required
+          />
+          
+          <label htmlFor="treino-dia" className="form-label">Dia/Grupo</label>
+          <input 
+            type="text" 
+            id="treino-dia" 
+            className="form-input" 
+            placeholder="Ex: Segunda-feira ou Peito/Tríceps"
+            value={diaTreino}
+            onChange={(e) => setDiaTreino(e.target.value)}
+          />
+        </section>
 
-            {/* --- EXIBIÇÃO CONDICIONAL DO GIF --- */}
-            {exercicioSelecionado && exercicioSelecionado.gif_url && (
-              <img 
-                src={exercicioSelecionado.gif_url} 
-                alt={`Demonstração de ${exercicioSelecionado.nome}`} 
-                style={gifStyle} 
-              />
-            )}
-            {/* ------------------------------------- */}
+        <h2 className="section-title">Exercícios</h2>
+        <div id="exercicio-lista">
+          
+          {exercicios.map((ex, index) => {
+            // --- ★★★ LÓGICA DO GIF ADICIONADA AQUI ★★★ ---
+            // Procura no catálogo o exercício que corresponde ao ID selecionado
+            const exercicioSelecionado = catalogoExercicios.find(catEx => catEx.id === ex.exercicio_id);
+            // ---------------------------------------------
+            
+            return (
+              <div className="exercicio-card" key={index}>
+                <div className="form-group">
+                  <label htmlFor={`exercicio-select-${index}`} className="form-label-sm">Exercício</label>
+                  <select 
+                    id={`exercicio-select-${index}`}
+                    name="exercicio_id" 
+                    className="form-select"
+                    value={ex.exercicio_id} 
+                    onChange={(e) => handleExercicioChange(index, e)} 
+                    required
+                  >
+                    <option value="">Selecione um exercício...</option>
+                    {catalogoExercicios.map(catEx => (
+                      <option key={catEx.id} value={catEx.id}>{catEx.nome}</option>
+                    ))}
+                  </select>
+                </div>
 
-            <input type="text" name="series" placeholder="Séries" value={ex.series} onChange={(e) => handleExercicioChange(index, e)} />
-            <input type="text" name="repeticoes" placeholder="Reps" value={ex.repeticoes} onChange={(e) => handleExercicioChange(index, e)} />
-            <input type="number" name="descanso_seg" placeholder="Descanso (s)" value={ex.descanso_seg} onChange={(e) => handleExercicioChange(index, e)} />
-            <input type="text" name="peso" placeholder="Peso" value={ex.peso} onChange={(e) => handleExercicioChange(index, e)} />
-            {index > 0 && <button type="button" onClick={() => removerExercicio(index)}>Remover</button>}
-          </div>
-        );
-      })}
-      <button type="button" onClick={adicionarExercicio}>+ Adicionar Exercício</button>
-      <hr/>
-      <button type="submit">Salvar Treino</button>
-    </form>
+                {/* --- ★★★ EXIBIÇÃO DO GIF ADICIONADA AQUI ★★★ --- */}
+                {exercicioSelecionado && exercicioSelecionado.gif_url && (
+                  <img 
+                    src={exercicioSelecionado.gif_url} 
+                    alt={exercicioSelecionado.nome} 
+                    style={gifStyle} 
+                  />
+                )}
+                {/* ------------------------------------------- */}
+
+                <div className="form-row"> 
+                  <div className="form-group"> 
+                    <label htmlFor={`series-${index}`} className="form-label-sm">Séries</label> 
+                    <input type="text" id={`series-${index}`} 
+                    name="series" className="form-input" placeholder="Ex: 3" value={ex.series} onChange={(e) => 
+                    handleExercicioChange(index, e)} /> 
+                    </div> 
+                    <div className="form-group"> 
+                      <label htmlFor={`repeticoes-${index}`} 
+                      className="form-label-sm">Repetições</label> 
+                      <input type="text" id={`repeticoes-${index}`} name="repeticoes" className="form-input" placeholder="Ex: 10-12" value={ex.repeticoes} onChange={(e) => 
+                        handleExercicioChange(index, e)} /> </div> </div> 
+                        <div className="form-group"> 
+                          <label htmlFor={`descanso-${index}`} className="form-label-sm">Descanso (segundos)</label> 
+                          <input type="number" id={`descanso-${index}`} name="descanso_seg" className="form-input" placeholder="Ex: 60" value={ex.descanso_seg} onChange={(e) => handleExercicioChange(index, e)} /> 
+                          </div> 
+                          <div className="form-group"> 
+                            <label htmlFor={`peso-${index}`} className="form-label-sm">Peso (opcional)</label> 
+                            <input type="text" id={`peso-${index}`} name="peso" className="form-input" placeholder="Ex: 20kg" value={ex.peso} onChange={(e) => handleExercicioChange(index, e)} /> 
+                            </div>
+                
+                {index > 0 && (
+                  <button 
+                    type="button" 
+                    className="btn-remover"
+                    onClick={() => removerExercicio(index)}
+                  >
+                    Remover Exercício
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        
+        <button 
+          type="button" 
+          id="add-exercicio-btn" 
+          className="btn-secondary-outline"
+          onClick={adicionarExercicio}
+        >
+          + Adicionar Exercício
+        </button>
+        <button type="submit" className="btn btn-primary">
+          Salvar Treino
+        </button>
+      </form>
+    </>
   );
 }
 

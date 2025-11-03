@@ -28,7 +28,6 @@ frontend/dist/
 # Arquivos de ambiente (onde senhas podem ser guardadas)
 .env
 *.env
-.env.*
 
 # Arquivos de log
 *.log
