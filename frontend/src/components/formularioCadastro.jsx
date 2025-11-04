@@ -11,8 +11,7 @@ function FormularioCadastro() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [nascimento, setNascimento] = useState('');
-  const [endereco, setEndereco] = useState(''); // Campos extras
-  const [cidade, setCidade] = useState('');     // Campos extras
+  const [senhaRepeat, setSenhaRepeat] = useState('');
 
   const [error, setError] = useState(null);
 
@@ -29,6 +28,10 @@ function FormularioCadastro() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError(null);
+    if (document.getElementById('senha').value !== document.getElementById('senha-repeat').value) {
+      setError('As senhas não coincidem.');
+      return;
+    }
 
     // 5. ★★★ O PULO DO GATO ★★★
     // Criamos o objeto 'dadosParaApi' APENAS com o que o backend espera.
@@ -56,9 +59,9 @@ function FormularioCadastro() {
 
   // 6. "TRADUÇÃO" DO HTML PARA JSX
   return (
-    <div className="login-container">
-      <div className="content-wrapper">
-        <header className="login-header-role">
+    <div className="login-container" style={{overflow:'visible'}}>
+      <div className="content-wrapper" >
+        <header className="login-header-role" >
           <Link to="/login" className="role-back-button"> {/* Link para voltar ao login */}
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -72,7 +75,6 @@ function FormularioCadastro() {
         </p>
 
         {/* Mostra o erro da API aqui */}
-        {error && <p style={{ color: 'red', textAlign: 'center', marginBottom: '1rem' }}>{error}</p>}
 
         <form id="cadastro-form" className="form-container" onSubmit={handleSubmit}>
           
@@ -102,10 +104,23 @@ function FormularioCadastro() {
               />
               {/* Ícone de olho pode ser adicionado aqui depois */}
             </div>
-          </section>
+            <label htmlFor="senha" className="form-label">Repita a Senha</label>
+            <div className="password-wrapper">
+              <input 
+                type="password" 
+                id="senha-repeat" 
+                className="form-input" 
+                placeholder="Digite a senha novamente"
+                value={senhaRepeat}
+                onChange={(e) => setSenhaRepeat(e.target.value)}
+                required 
+              />
+              {/* Ícone de olho pode ser adicionado aqui depois */}
+            </div>
+          
+            {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
 
-          {/* Seção 2: Dados Pessoais */}
-          <section id="dados-pessoais-section" className="form-section">
+          
             <label htmlFor="nome" className="form-label">Nome Completo</label>
             <input 
               type="text" 
@@ -126,29 +141,10 @@ function FormularioCadastro() {
               onChange={(e) => setNascimento(e.target.value)}
             />
 
-            <label htmlFor="endereco" className="form-label">Endereço (Opcional)</label>
-            <input 
-              type="text" 
-              id="endereco" 
-              className="form-input" 
-              placeholder="Ex: Rua das Flores, 123"
-              value={endereco}
-              onChange={(e) => setEndereco(e.target.value)}
-            />
-
-            <label htmlFor="cidade" className="form-label">Cidade (Opcional)</label>
-            <input 
-              type="text" 
-              id="cidade" 
-              className="form-input" 
-              placeholder="Ex: São Paulo"
-              value={cidade}
-              onChange={(e) => setCidade(e.target.value)}
-            />
           </section>
 
           <div className="button-group-role">
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary" style={{transform: 'scale(1)'}}>
               Finalizar Cadastro
             </button>
           </div>

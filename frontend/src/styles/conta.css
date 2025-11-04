@@ -36,4 +36,7 @@
     align-items: center;
     /* Herda .btn-danger e .btn-secondary de base.css */
 }
+.conta-container{
+    position: relative;
+}
 

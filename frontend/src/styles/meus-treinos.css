@@ -57,10 +57,12 @@
 }
 .treino-card-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    gap: 2%;
     cursor: pointer; 
 }
+
 .main-content-wrapper {
     padding: 0px;
 }

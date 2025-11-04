@@ -63,7 +63,7 @@ function Perfil() {
         {/* Você pode adicionar um botão de salvar aqui se um dia implementar a edição de perfil */}
       </header>
 
-      <main className="main-content" style={{height: 'calc(100% - 14vh'}}>
+      <main className="main-content" style={{height: '84.4%'}}>
         <div className="conta-container">
           
           {/* Seção do Cabeçalho do Perfil (com avatar) */}

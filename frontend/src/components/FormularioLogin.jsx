@@ -94,7 +94,7 @@ function FormularioLogin() {
           <button type="submit" className="btn btn-primary">
             Entrar
           </button>
-          <Link to="/cadastro" className="btn btn-secondary">
+          <Link to="/cadastro" className="btn btn-secondary" style={{borderColor: 'white', color: 'white'}}>
             Criar conta
           </Link>
         </div>

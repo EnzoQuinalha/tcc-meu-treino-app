@@ -95,7 +95,6 @@ a {
     flex-grow: 1;
     padding: 1.5rem; /* p-
     /* Deixa espaço para a barra de navegação mobile fixa */
-    padding-bottom: 7rem; 
 }
 
 /* --- Layout de Desktop --- */
@@ -116,7 +115,7 @@ a {
         border-radius: 0.75rem; 
         box-shadow: 0 10px 15px rgba(0,0,0,0.1); 
         overflow: hidden; 
-        background-color: #FFFFFF; 
+        background-color: #FFFFFF; ;
     }
 
     /* BARRA LATERAL FIXA */
@@ -180,7 +179,7 @@ a {
     
     .main-content {
         background-color: #efefef; /* Cor que você definiu */
-        padding-bottom: 1.5rem; 
+        position: relative;
     }
 
     .mobile-nav {
@@ -225,12 +224,21 @@ a {
 }
 
 .btn-danger {
-    background-color: white;
-    color: #EF4444; 
+    background-color: rgb(255, 255, 255);
+    color: #fc2323; 
     font-weight: 700;
     padding: 1rem;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
-    border-radius: 0.5rem; 
+    border-radius: 1rem; 
+    border-color: rgba(255, 0, 0, 0.393);
+    max-width: 30vh;
+    position: absolute;
+    left: 35vh;
+    top: 59vh;
+}
+.btn-danger:hover {
+    transition: transform 0.2s ease;
+    transform: scale(1.05);
 }
 .btn-padrao {
     background-color: white;
