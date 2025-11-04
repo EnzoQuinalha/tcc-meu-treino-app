@@ -2,67 +2,90 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+// 1. Importa os estilos da página
+import '../styles/conta.css';
+import '../styles/header.css';
+import '../styles/base.css';
+
 function Perfil() {
-  // Estado para guardar os dados do usuário
   const [usuario, setUsuario] = useState(null);
-  // Estado para mensagens de erro ou carregamento
   const [mensagem, setMensagem] = useState('Carregando perfil...');
   const navigate = useNavigate();
 
+  // 2. Lógica para o botão de Logout (continua a mesma)
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove o token
-    navigate('/login'); // Redireciona para o login
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
-  // O useEffect é executado uma vez, quando o componente é montado na tela
+  // 3. Lógica para buscar os dados do perfil (continua a mesma)
   useEffect(() => {
-    // 1. Pega o token do localStorage
     const token = localStorage.getItem('token');
-
-    // Se não houver token, o usuário não está logado
     if (!token) {
-      setMensagem('Você não está logado. Faça o login para ver seu perfil.');
+      navigate('/login'); // Se não tem token, nem tenta carregar
       return;
     }
 
-    // 2. Se houver um token, faz a requisição para a rota protegida
     const buscarPerfil = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:5000/api/perfil', {
-          // 3. **MUITO IMPORTANTE:** Envia o token no cabeçalho da requisição
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+          headers: { 'Authorization': `Bearer ${token}` }
         });
-        // 4. Salva os dados do usuário no estado
         setUsuario(response.data);
       } catch (error) {
-        // Se o token for inválido ou expirado, o backend retornará um erro
         console.error('Erro ao buscar perfil:', error);
-        setMensagem('Não foi possível carregar o perfil. Seu token pode ter expirado. Faça o login novamente.');
-        // Opcional: remover o token inválido
-        localStorage.removeItem('token');
+        setMensagem('Não foi possível carregar o perfil.');
+        if (error.response && error.response.status === 401) {
+          // Se o token for inválido/expirado, força o logout
+          handleLogout();
+        }
       }
     };
 
     buscarPerfil();
+    // eslint-disable-next-line
   }, []); // O array vazio [] garante que o useEffect rode apenas uma vez
 
-  // Se ainda não temos os dados do usuário, mostramos a mensagem
+  // 4. Renderização de Loading
   if (!usuario) {
-    return <div>{mensagem}</div>;
+    return (
+        <div style={{ padding: '20px', textAlign: 'center' }}>
+            <p>{mensagem}</p>
+        </div>
+    );
   }
 
-  // Se temos os dados, mostramos o perfil
+  // 5. "Tradução" do HTML para JSX (quando o usuário já foi carregado)
   return (
-    <div>
-      <h2>Perfil do Usuário</h2>
-      <p><strong>Nome:</strong> {usuario.nome}</p>
-      <p><strong>Email:</strong> {usuario.email}</p>
-      <button onClick={handleLogout} style={{backgroundColor: 'red', color: 'white'}}>
-        Sair (Logout)
-      </button>
-    </div>
+    <>
+      <header className="page-header">
+        <h1>Minha Conta</h1>
+        {/* Você pode adicionar um botão de salvar aqui se um dia implementar a edição de perfil */}
+      </header>
+
+      <main className="main-content" style={{height: 'calc(100% - 14vh'}}>
+        <div className="conta-container">
+          
+          {/* Seção do Cabeçalho do Perfil (com avatar) */}
+          <div className="profile-header">
+            <div className="avatar-placeholder">
+            </div>
+            <h2>{usuario.nome}</h2>
+            <p>{usuario.email}</p>
+          </div>
+
+          {/* Botão de Logout */}
+          <button 
+            onClick={handleLogout} 
+            className="btn-danger" // Classe do seu base.css
+            style={{ width: '100%', marginTop: '1.5rem' }} // Estilo para ocupar 100% da largura
+          >
+            Sair (Logout)
+          </button>
+
+        </div>
+      </main>
+    </>
   );
 }
 
