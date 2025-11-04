@@ -21,6 +21,7 @@ class Exercicio(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(120), unique=True, nullable=False)
     gif_url = db.Column(db.String(255)) # URL para o GIF demonstrativo
+    grupo_muscular = db.Column(db.String(100), nullable=True)
 
     def __repr__(self):
         return f'<Exercicio {self.nome}>'

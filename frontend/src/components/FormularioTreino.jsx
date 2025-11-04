@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import '../styles/criarTreino.css'; // O CSS que você já importou
+import '../styles/criarTreino.css';
 
 function FormularioTreino() {
   const navigate = useNavigate();
@@ -9,24 +9,51 @@ function FormularioTreino() {
   const [diaTreino, setDiaTreino] = useState('');
   const [exercicios, setExercicios] = useState([{ exercicio_id: '', series: '', repeticoes: '', descanso_seg: '', peso: '' }]);
   
-  // Agora esperamos que o catálogo contenha o gif_url
-  const [catalogoExercicios, setCatalogoExercicios] = useState([]); 
+  // --- ★★★ NOVOS ESTADOS ★★★ ---
+  const [catalogoExercicios, setCatalogoExercicios] = useState([]); // Guarda a lista COMPLETA
+  const [exerciciosFiltrados, setExerciciosFiltrados] = useState([]); // Guarda a lista que o usuário vê
+  const [gruposMusculares, setGruposMusculares] = useState([]); // Para o <select> do filtro
+  const [filtroGrupo, setFiltroGrupo] = useState('todos'); // O filtro atual
+  // -----------------------------
 
-  // --- LÓGICA (Tudo isso continua igual) ---
   useEffect(() => {
     const buscarCatalogo = async () => {
       const token = localStorage.getItem('token');
       if (!token) return;
       try {
-        // Graças ao Passo 1, a API agora envia o gif_url
-        const response = await axios.get('http://127.0.0.1:5000/api/exercicios', { 
+        const response = await axios.get('http://127.0.0.1:5000/api/exercicios', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        setCatalogoExercicios(response.data); 
+        
+        const catalogo = response.data;
+        setCatalogoExercicios(catalogo); // Guarda a lista completa
+        setExerciciosFiltrados(catalogo); // No início, mostra todos
+
+        // --- Lógica para extrair os grupos musculares ---
+        // Pega todos os grupos, ex: ["Peito", "Perna", "Costas", "Peito"]
+        const grupos = catalogo.map(ex => ex.grupo_muscular).filter(Boolean); // .filter(Boolean) remove nulos
+        // Cria uma lista única, ex: ["Peito", "Perna", "Costas"]
+        const gruposUnicos = [...new Set(grupos)]; 
+        setGruposMusculares(gruposUnicos.sort()); // Salva em ordem alfabética
+        // ------------------------------------------------
+        
       } catch (error) { console.error("Erro ao buscar catálogo", error); }
     };
     buscarCatalogo();
-  }, []);
+  }, []); // Roda só uma vez
+
+  // --- ★★★ NOVO EFEITO PARA FILTRAR ★★★ ---
+  // Roda toda vez que o usuário muda o filtro ou o catálogo é carregado
+  useEffect(() => {
+    if (filtroGrupo === 'todos') {
+      setExerciciosFiltrados(catalogoExercicios); // Mostra todos
+    } else {
+      // Mostra apenas os exercícios que batem com o grupo selecionado
+      const filtrados = catalogoExercicios.filter(ex => ex.grupo_muscular === filtroGrupo);
+      setExerciciosFiltrados(filtrados);
+    }
+  }, [filtroGrupo, catalogoExercicios]); // Dependências
+  // ------------------------------------
 
   const handleExercicioChange = (index, event) => {
     const { name, value } = event.target;
@@ -61,16 +88,15 @@ function FormularioTreino() {
     }
   };
 
-  // --- ★★★ 1. ADICIONE O ESTILO INLINE PARA O GIF ★★★ ---
+
   const gifStyle = {
     width: '150px',
     height: '150px',
     borderRadius: '8px',
     display: 'block',
-    margin: '15px auto 5px auto', // Centraliza e dá espaçamento
-    backgroundColor: '#f0f0f0' // Fundo cinza claro enquanto carrega
+    margin: '15px auto 5px auto', 
+    backgroundColor: '#f0f0f0' 
   };
-  // ----------------------------------------------------
 
   return (
     <>
@@ -107,13 +133,29 @@ function FormularioTreino() {
         </section>
 
         <h2 className="section-title">Exercícios</h2>
+
+        {/* --- ★★★ NOVO FILTRO DROPDOWN ★★★ --- */}
+        <div className="form-group" style={{padding: '0 1rem'}}>
+          <label htmlFor="filtro-grupo" className="form-label-sm">Filtrar por Grupo Muscular</label>
+          <select 
+            id="filtro-grupo"
+            className="form-select"
+            value={filtroGrupo}
+            onChange={(e) => setFiltroGrupo(e.target.value)}
+          >
+            <option value="todos">Todos os Grupos</option>
+            {gruposMusculares.map(grupo => (
+              <option key={grupo} value={grupo}>{grupo}</option>
+            ))}
+          </select>
+        </div>
+        {/* ------------------------------------- */}
+
+
         <div id="exercicio-lista">
-          
           {exercicios.map((ex, index) => {
-          //eslint-disable-next-line
-            const exercicioSelecionado = catalogoExercicios.find(catEx => catEx.id == ex.exercicio_id); //NÃO TROCAR == PARA === ACABA COM O GIF
-            // ----------------------------------------------------
-            
+            // eslint-disable-next-line
+            const exercicioSelecionado = catalogoExercicios.find(catEx => catEx.id == ex.exercicio_id); //NÂO MEXER NESSA LINHA
             return (
               <div className="exercicio-card" key={index}>
                 <div className="form-group">
@@ -127,13 +169,17 @@ function FormularioTreino() {
                     required
                   >
                     <option value="">Selecione um exercício...</option>
-                    {catalogoExercicios.map(catEx => (
+                    
+                    {/* --- ★★★ MUDANÇA AQUI ★★★ --- */}
+                    {/* Mapeia a lista FILTRADA, não a completa */}
+                    {exerciciosFiltrados.map(catEx => (
                       <option key={catEx.id} value={catEx.id}>{catEx.nome}</option>
                     ))}
+                    {/* ----------------------------- */}
+
                   </select>
                 </div>
 
-                {/* --- ★★★ 3. ADICIONE A EXIBIÇÃO DO GIF ★★★ --- */}
                 {exercicioSelecionado && exercicioSelecionado.gif_url && (
                   <img 
                     src={exercicioSelecionado.gif_url} 
@@ -141,7 +187,6 @@ function FormularioTreino() {
                     style={gifStyle} 
                   />
                 )}
-                {/* ------------------------------------------- */}
 
                 <div className="form-row"> 
                   <div className="form-group"> 
@@ -186,7 +231,7 @@ function FormularioTreino() {
         >
           + Adicionar Exercício
         </button>
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary" style={{marginBottom: '2rem'}}>
           Salvar Treino
         </button>
       </form>

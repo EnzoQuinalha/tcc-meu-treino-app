@@ -198,7 +198,8 @@ def listar_catalogo_exercicios():
     resultado = [{
         "id": ex.id,
         "nome": ex.nome,
-        "gif_url": ex.gif_url
+        "gif_url": ex.gif_url,
+        "grupo_muscular": ex.grupo_muscular
     } for ex in todos_exercicios]
     
     return jsonify(resultado)
