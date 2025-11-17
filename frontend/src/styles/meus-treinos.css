@@ -66,3 +66,15 @@
 .main-content-wrapper {
     padding: 0px;
 }
+.btn-card {
+    flex: 1; /* Faz os botões crescerem para ocupar o espaço */
+    padding: 0.5rem 0.75rem; 
+    font-size: 0.875rem; 
+    font-weight: 500;
+    border-radius: 0.375rem; 
+    border: 1px solid black;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+
+    text-align: center; /* <-- ★★★ ADICIONE ESTA LINHA ★★★ */
+}

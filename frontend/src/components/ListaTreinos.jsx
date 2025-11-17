@@ -150,25 +150,25 @@ function ListaTreinos() {
                 )}
                 {/* --- FIM DAS MUDANÇAS --- */}
 
-                <div className="treino-card-footer" style={{height: '4vh '}}>
+                <div className="treino-card-footer" style={{height: '5vh ', gap: '2%', display: 'flex'}}>
                   <button 
                     onClick={() => handleMarcarFeito(treino.id)}
                     className="btn-card btn-card-primary"
-                    style={{borderRadius: '1rem', padding: '1rem', color: 'rgb(0,200,0)', backgroundColor: 'white', fontWeight: '700', borderColor: 'rgba(13, 195, 13, 1)', height: '5vh'}}
+                    style={{borderRadius: '1rem', color: 'rgb(0,200,0)', backgroundColor: 'white', fontWeight: '700', borderColor: 'rgba(13, 195, 13, 1)', height: '5vh'}}
                   >
                     Marcar Feito
                   </button>
                   <button 
                     onClick={() => setEditandoTreinoId(treino.id)}
                     className="btn-card btn-card-secondary"
-                    style={{backgroundColor: 'white', borderRadius: '1rem', padding: '1rem', position: 'relative', fontWeight: '700', height: '5vh'}}
+                    style={{backgroundColor: 'white', borderRadius: '1rem', position: 'relative', fontWeight: '700', height: '5vh'}}
                   >
                     Editar
                   </button>
                   <button 
                     onClick={() => handleApagarTreino(treino.id)}
                     className="btn-card"
-                    style={{borderRadius: '1rem', padding: '1rem', color: 'rgb(255,0,0)', backgroundColor: 'white', fontWeight: '700', borderColor: 'rgba(255, 0, 0, 1)', height: '5vh'}}
+                    style={{borderRadius: '1rem', color: 'rgb(255,0,0)', backgroundColor: 'white', fontWeight: '700', borderColor: 'rgba(255, 0, 0, 1)', height: '5vh'}}
                   >
                     Apagar
                   </button>
