@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import FormularioEdicaoTreino from './FormularioEdicaoTreino';
 
 // Importa os estilos da página
@@ -14,6 +14,7 @@ function ListaTreinos() {
   const [editandoTreinoId, setEditandoTreinoId] = useState(null);
   
   const [openTreinoId, setOpenTreinoId] = useState(null);
+  const navigate = useNavigate();
   // ---------------------------------------------
 
   useEffect(() => {
@@ -159,7 +160,7 @@ function ListaTreinos() {
                     Marcar Feito
                   </button>
                   <button 
-                    onClick={() => setEditandoTreinoId(treino.id)}
+                    onClick={() => navigate(`/treinos/${treino.id}/editar`)}
                     className="btn-card btn-card-secondary"
                     style={{backgroundColor: 'white', borderRadius: '1rem', position: 'relative', fontWeight: '700', height: '5vh'}}
                   >

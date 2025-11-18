@@ -11,6 +11,7 @@ import FormularioTreino from './components/FormularioTreino';
 // O FormularioEdicaoTreino será chamado de dentro do ListaTreinos por enquanto
 import Sidebar from './components/Sidebar';
 import FormularioEdicaoTreino from './components/FormularioEdicaoTreino';
+import HomePage from './components/HomePage';
 
 // Componente para proteger rotas (continua igual)
 function ProtectedRoute() {
@@ -48,7 +49,7 @@ function App() {
             
             {/* Rotas COM o layout principal (Sidebar/BottomNav) */}
             <Route element={<MainLayout />}> 
-              <Route path="/" element={<h2>Página Inicial (Dashboard)</h2>} />
+              <Route path="/" element={<HomePage/>} />
               <Route path="/treinos" element={<ListaTreinos />} />
               <Route path="/perfil" element={<Perfil />} />
             </Route>

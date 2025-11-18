@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import '../styles/criarTreino.css'; // 1. Reutiliza o CSS da página de criação
 
 // Recebe o ID do treino a ser editado e a função para fechar (onEdicaoConcluida)
-function FormularioEdicaoTreino({ treinoId, onEdicaoConcluida }) {
+function FormularioEdicaoTreino({}) {
   const navigate = useNavigate();
   
   // Estados para os campos do formulário
@@ -13,20 +13,37 @@ function FormularioEdicaoTreino({ treinoId, onEdicaoConcluida }) {
   const [exercicios, setExercicios] = useState([]);
   const [catalogoExercicios, setCatalogoExercicios] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { treinoId } = useParams();
+  const [exerciciosFiltrados, setExerciciosFiltrados] = useState([]); // O que aparece no dropdown
+  const [gruposMusculares, setGruposMusculares] = useState([]);       // Lista de grupos (Peito, Costas...)
+  const [filtroGrupo, setFiltroGrupo] = useState('todos');
 
   // 2. LÓGICA DE EDIÇÃO: Buscar os dados do treino para preencher o formulário
   useEffect(() => {
     const token = localStorage.getItem('token');
     
     // Função para buscar o catálogo (igual ao do CriarTreino)
+    // Função para buscar o catálogo e configurar filtros
     const buscarCatalogo = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:5000/api/exercicios', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        setCatalogoExercicios(response.data);
+        
+        const catalogo = response.data;
+        setCatalogoExercicios(catalogo); 
+        
+        // ★ Inicializa os filtrados com TUDO
+        setExerciciosFiltrados(catalogo); 
+
+        // ★ Extrai os grupos musculares únicos
+        const grupos = catalogo.map(ex => ex.grupo_muscular).filter(Boolean);
+        const gruposUnicos = [...new Set(grupos)]; 
+        setGruposMusculares(gruposUnicos.sort());
+        
       } catch (error) { console.error("Erro ao buscar catálogo", error); }
     };
+    
 
     // Função para buscar os dados DO TREINO específico
     const buscarTreinoParaEditar = async () => {
@@ -43,13 +60,26 @@ function FormularioEdicaoTreino({ treinoId, onEdicaoConcluida }) {
       } catch (error) {
         console.error("Erro ao buscar dados do treino", error);
         alert("Não foi possível carregar os dados do treino.");
-        onEdicaoConcluida(); // Fecha o formulário se der erro
+        handleVoltar(); // Fecha o formulário se der erro
       }
     };
 
     buscarCatalogo();
     buscarTreinoParaEditar();
   }, [treinoId]); // Roda sempre que o ID do treino mudar
+
+  useEffect(() => {
+    if (filtroGrupo === 'todos') {
+      setExerciciosFiltrados(catalogoExercicios);
+    } else {
+      const filtrados = catalogoExercicios.filter(ex => ex.grupo_muscular === filtroGrupo);
+      setExerciciosFiltrados(filtrados);
+    }
+  }, [filtroGrupo, catalogoExercicios]);
+
+  const handleVoltar = () => {
+    navigate('/treinos');
+  };
 
   // 3. Funções de manipulação do formulário (idênticas ao CriarTreino)
   const handleExercicioChange = (index, event) => {
@@ -71,6 +101,8 @@ function FormularioEdicaoTreino({ treinoId, onEdicaoConcluida }) {
 
   // 4. LÓGICA DE ENVIO (PUT para ATUALIZAR)
   const handleSubmit = async (event) => {
+    alert('Treino atualizado com sucesso!');
+    navigate('/treinos');
     event.preventDefault();
     const token = localStorage.getItem('token');
     // Filtra os exercícios para enviar apenas o que a API precisa
@@ -89,8 +121,7 @@ function FormularioEdicaoTreino({ treinoId, onEdicaoConcluida }) {
       await axios.put(`http://127.0.0.1:5000/api/treinos/${treinoId}`, treinoAtualizado, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      alert('Treino atualizado com sucesso!');
-      onEdicaoConcluida(); // Chama a função para fechar o formulário
+      handleVoltar(); // Chama a função para fechar o formulário
     } catch (error) {
       console.error("Erro ao atualizar treino", error);
       alert('Erro ao atualizar treino.');
@@ -120,7 +151,7 @@ function FormularioEdicaoTreino({ treinoId, onEdicaoConcluida }) {
     <>
       <header className="page-header" style={{borderRadius: '0.75rem 0.75rem 0 0'}}>
         {/* Usamos um <button> para chamar a função de fechar, em vez de <Link> */}
-        <button onClick={onEdicaoConcluida} className="back-button">
+        <button onClick={handleVoltar} className="back-button">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
           </svg>
@@ -152,6 +183,20 @@ function FormularioEdicaoTreino({ treinoId, onEdicaoConcluida }) {
         </section>
 
         <h2 className="section-title">Exercícios</h2>
+        <div className="form-group" style={{padding: '0 1rem'}}>
+          <label htmlFor="filtro-grupo" className="form-label-sm">Filtrar por Grupo Muscular</label>
+          <select 
+            id="filtro-grupo"
+            className="form-select"
+            value={filtroGrupo}
+            onChange={(e) => setFiltroGrupo(e.target.value)}
+          >
+            <option value="todos">Todos os Grupos</option>
+            {gruposMusculares.map(grupo => (
+              <option key={grupo} value={grupo}>{grupo}</option>
+            ))}
+          </select>
+        </div>
         <div id="exercicio-lista">
           
           {exercicios.map((ex, index) => {
@@ -169,7 +214,7 @@ function FormularioEdicaoTreino({ treinoId, onEdicaoConcluida }) {
                     required
                   >
                     <option value="">Selecione um exercício...</option>
-                    {catalogoExercicios.map(catEx => (
+                    {exerciciosFiltrados.map(catEx => (
                       <option key={catEx.id} value={catEx.id}>{catEx.nome}</option>
                     ))}
                   </select>
@@ -243,7 +288,7 @@ function FormularioEdicaoTreino({ treinoId, onEdicaoConcluida }) {
         <button type="submit" className="btn btn-primary">
           Salvar Alterações
         </button>
-        <button type="button" className="btn-secondary" onClick={onEdicaoConcluida} style={{marginTop: '10px'}}>
+        <button type="button" className="btn-secondary" onClick={handleVoltar} style={{marginTop: '10px'}}>
           Cancelar
         </button>
       </form>

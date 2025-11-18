@@ -121,15 +121,23 @@ function FormularioTreino() {
             required
           />
           
-          <label htmlFor="treino-dia" className="form-label">Dia/Grupo</label>
-          <input 
-            type="text" 
-            id="treino-dia" 
-            className="form-input" 
-            placeholder="Ex: Segunda-feira ou Peito/Tríceps"
+          <label htmlFor="treino-dia" className="form-label">Dia da Semana</label>
+          <select
+            id="treino-dia"
+            className="form-select" // Usamos a mesma classe de estilo dos outros selects
             value={diaTreino}
             onChange={(e) => setDiaTreino(e.target.value)}
-          />
+            required // <--- Isso obriga o usuário a escolher uma opção
+          >
+            <option value="">Selecione o dia...</option>
+            <option value="Segunda-feira">Segunda-feira</option>
+            <option value="Terça-feira">Terça-feira</option>
+            <option value="Quarta-feira">Quarta-feira</option>
+            <option value="Quinta-feira">Quinta-feira</option>
+            <option value="Sexta-feira">Sexta-feira</option>
+            <option value="Sábado">Sábado</option>
+            <option value="Domingo">Domingo</option>
+          </select>
         </section>
 
         <h2 className="section-title">Exercícios</h2>
