@@ -7,10 +7,10 @@
 }
 
 /* Arredondamento no Desktop */
-@media (min-width: 768px) {
+@media (min-width: 50px) {
     .page-header {
         border-top-right-radius: 0.75rem; /* rounded-tr-xl */
-        width: 105.2631vh;
+        width: 50rem;
     }
 }
 
